@@ -1,3 +1,0 @@
-D:\UE4CPP\ArenaBattle\Source\ArenaBattle\ArenaBattle.Build.cs
-D:\UE4CPP\ArenaBattle\Source\ArenaBattle.Target.cs
-D:\UE4CPP\ArenaBattle\Source\ArenaBattleEditor.Target.cs
