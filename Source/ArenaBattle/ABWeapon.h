@@ -20,6 +20,12 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	UPROPERTY()//메모리 관리 위해 추가 필수
-	class USkeletalMeshComponent* Weapon;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Weapon")
+		class USkeletalMeshComponent* Weapon;
+
+		float GetDamage() { return BaseDamage; }
+
+private:
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+		float BaseDamage;
 };
