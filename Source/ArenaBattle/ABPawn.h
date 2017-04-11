@@ -5,7 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "ABPawn.generated.h"
 
-UCLASS()
+UCLASS(config = Game)
 class ARENABATTLE_API AABPawn : public APawn
 {
 	GENERATED_BODY()
@@ -22,15 +22,28 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Collision")
-	class UCapsuleComponent* Body;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Collision")
+		class UCapsuleComponent* Body;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Visual")
-	class USkeletalMeshComponent* Mesh;
+		class USkeletalMeshComponent* Mesh;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement")
-	class UFloatingPawnMovement* Movement;
-	
-	
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Helper")
+		class UArrowComponent* Arrow;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
+		class USpringArmComponent* SpringArm;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
+		class UCameraComponent* Camera;
+
+	UPROPERTY(config, EditAnywhere, Category = "Stat")
+		float MaxHP;
+
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Stat")
+		float CurrentHP;
+
+private:
+	UPROPERTY(config)
+		TArray<FStringAssetReference> CharacterAssets;
 };
