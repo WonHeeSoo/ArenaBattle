@@ -9,19 +9,20 @@ AABWeapon::AABWeapon()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponHash"));// 이니셜 라이즈 때 추가
-	RootComponent = Weapon;
+	weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("weaponMesh"));
+	RootComponent = weapon;
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Weapon(TEXT("SkeletalMesh'/Game/InfinityBladeWeapons/Weapons/Blade/Silly_Weapons/Blade_ChickenBlade/SK_Blade_ChickenBlade.SK_Blade_ChickenBlade'"));
-	Weapon->SetSkeletalMesh(SK_Weapon.Object);
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> sk_Weapon(
+		TEXT("SkeletalMesh'/Game/InfinityBladeWeapons/Weapons/Blade/Swords/Blade_DragonSword/SK_Blade_DragonSword.SK_Blade_DragonSword'"));
+	weapon->SetSkeletalMesh(sk_Weapon.Object);
 }
 
 // Called when the game starts or when spawned
 void AABWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	//Weapon = NewObject<UStaticMeshComponent>(this); // 런타임에 추가
-	
+	//컴포넌트는 런타임에서 초기화하지 않고 처음부터 초기화 한다.
+	//weapon = NewObject<USkeletalMeshComponent>(this);
 }
 
 // Called every frame

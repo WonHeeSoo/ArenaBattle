@@ -12,7 +12,7 @@ class ARENABATTLE_API AABWeapon : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	AABWeapon();
+	AABWeapon();      
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -20,12 +20,16 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Weapon")
-		class USkeletalMeshComponent* Weapon;
 
-		float GetDamage() { return BaseDamage; }
+	// 변수
+	//객체 타입은 visible, 밸류 타입은 edit
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "weapon")
+	class USkeletalMeshComponent* weapon;
 
-private:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-		float BaseDamage;
+	UFUNCTION(BlueprintCallable, Category = "weapon|Stat")
+	float getDamage(){ return BaseDamage; }
+
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
+	float BaseDamage;
+
 };

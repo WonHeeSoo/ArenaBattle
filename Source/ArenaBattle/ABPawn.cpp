@@ -2,6 +2,7 @@
 
 #include "ArenaBattle.h"
 #include "ABGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ABPawn.h"
 
 
@@ -10,27 +11,37 @@ AABPawn::AABPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Body = CreateDefaultSubobject<UCapsuleComponent>("Capsule");
+	
+	Body = CreateDefaultSubobject<UCapsuleComponent>(TEXT("root"));
 	RootComponent = Body;
-
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh");
+	
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Body);
+	
+	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("movement"));
+	Movement->MaxSpeed = 1200.0f;
 
-	Arrow = CreateDefaultSubobject<UArrowComponent>("Arrow");
-	Arrow->SetupAttachment(Body);
-
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(Body);
 
-	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+	//Camera->SetRelativeLocationAndRotation(FVector(0.0f, -300.0f, 350.0f), FRotator(-30.0f, 90.0f, 0.0f));
 
-	Body->SetCapsuleSize(34.0f, 88.0f);
+	Body->SetCapsuleHalfHeight(88.0f);
+	Body->SetCapsuleRadius(36.0f);
 	Mesh->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Warrior(TEXT("SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard'"));
-	Mesh->SetSkeletalMesh(SK_Warrior.Object);
-	SpringArm->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	SpringArm->TargetArmLength = 650.0f;
+
+	SpringArm->TargetArmLength = 800.0f;
+	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
+	SpringArm->bInheritPitch = false;
+	SpringArm->bInheritYaw = false;
+
+	//변수가 중복되지 않게 하기 위해(계속 변수를 공유한다) static을 사용한다.
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh>
+		SK_Mesh(TEXT("SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_FrostGiant.SK_CharM_FrostGiant'"));
+	Mesh->SetSkeletalMesh(SK_Mesh.Object);
+	//AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	MaxHP = 100.0f;
 }
@@ -51,7 +62,6 @@ void AABPawn::BeginPlay()
 			Mesh->SetSkeletalMesh(NewCharacter.Get());
 		}
 	}
-
 }
 
 // Called every frame
@@ -59,6 +69,13 @@ void AABPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	FVector InputVector = FVector(CurrentUpDownVal, CurrentLeftRightVal, 0.0F);
+	if (InputVector.SizeSquared() > 0.0F)
+	{
+		FRotator TargetRotation = UKismetMathLibrary::MakeRotFromX(InputVector);
+		SetActorRotation(TargetRotation);
+		//AddMovementInput(GetActorForwardVector(),);
+	}
 }
 
 // Called to bind functionality to input
@@ -66,5 +83,17 @@ void AABPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
 
+	InputComponent->BindAxis("LeftRight", this, &AABPawn::LeftRightInput);
+	InputComponent->BindAxis("UpDown", this, &AABPawn::UpDownInput);
+}
+
+void AABPawn::UpDownInput(float NewInputVal)
+{
+	CurrentUpDownVal = NewInputVal;
+}
+
+void AABPawn::LeftRightInput(float NewInputVal)
+{
+	CurrentLeftRightVal = NewInputVal;
 }
 

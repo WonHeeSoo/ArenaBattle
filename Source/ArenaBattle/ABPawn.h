@@ -5,6 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "ABPawn.generated.h"
 
+//컨텐츠 - 게임, 아키텍쳐 - 엔진
 UCLASS(config = Game)
 class ARENABATTLE_API AABPawn : public APawn
 {
@@ -22,28 +23,34 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Collision")
-		class UCapsuleComponent* Body;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Visual")
-		class USkeletalMeshComponent* Mesh;
+	UPROPERTY()
+	class UCapsuleComponent* Body;
+	UPROPERTY()
+	class USkeletalMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere)
+	class UFloatingPawnMovement* Movement;
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* SpringArm;
+	UPROPERTY()
+	class UCameraComponent* Camera;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Helper")
-		class UArrowComponent* Arrow;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-		class USpringArmComponent* SpringArm;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-		class UCameraComponent* Camera;
-
-	UPROPERTY(config, EditAnywhere, Category = "Stat")
+	UPROPERTY(config, BlueprintReadWrite, EditAnywhere, Category = "Stat")
 		float MaxHP;
 
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Stat")
 		float CurrentHP;
 
-private:
-	UPROPERTY(config)
-		TArray<FStringAssetReference> CharacterAssets;
+public:
+	//FStringAssetReference를 사용하면 경로 지정한곳에서 리소스까지 불러올 수 있다.
+	UPROPERTY(config, BlueprintReadOnly, VisibleInstanceOnly, Category = "Assets")
+	TArray<FStringAssetReference> CharacterAssets;
+
+	float CurrentLeftRightVal;
+	float CurrentUpDownVal;
+
+	UFUNCTION()
+		void UpDownInput(float NewInputVal);
+	UFUNCTION()
+		void LeftRightInput(float NewInputVal);
 };

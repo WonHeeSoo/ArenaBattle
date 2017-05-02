@@ -3,15 +3,16 @@
 #include "WebService.h"
 #include "WebConnect.h"
 
-
-
 UWebConnect::UWebConnect()
 {
-	UE_LOG(LogClass, Warning, TEXT("%s"), TEXT("WebConnect Constructor Call!"));
+	WS_LOG(Warning, TEXT("%s"), TEXT("WebConnect Constructor Call!"))
+
 	Host = TEXT("localhost:8000");
 	URI = TEXT("/");
 }
-void UWebConnect::RequestToken()
+
+void UWebConnect::RequestToken(const FString& UserID)
 {
-	UE_LOG(LogClass, Warning, TEXT("Request Token Call!"));
+	WS_LOG(Warning, TEXT("%s"), TEXT("Request Token Call!"));
+	TokenCompleteDelegate.Broadcast(TEXT("0LCJydGkiOiI2a3NjVE9pTUNESVZWM05qVTIyUnlTIn0.VJyMOicM"));
 }
