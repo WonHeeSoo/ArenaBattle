@@ -9,15 +9,15 @@
 // Sets default values
 AABPawn::AABPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	Body = CreateDefaultSubobject<UCapsuleComponent>(TEXT("root"));
 	RootComponent = Body;
-	
+
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Body);
-	
+
 	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("movement"));
 	Movement->MaxSpeed = 1200.0f;
 
@@ -65,16 +65,16 @@ void AABPawn::BeginPlay()
 }
 
 // Called every frame
-void AABPawn::Tick( float DeltaTime )
+void AABPawn::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 
 	FVector InputVector = FVector(CurrentUpDownVal, CurrentLeftRightVal, 0.0F);
 	if (InputVector.SizeSquared() > 0.0F)
 	{
 		FRotator TargetRotation = UKismetMathLibrary::MakeRotFromX(InputVector);
 		SetActorRotation(TargetRotation);
-		//AddMovementInput(GetActorForwardVector(),);
+		AddMovementInput(GetActorForwardVector());
 	}
 }
 
@@ -96,4 +96,3 @@ void AABPawn::LeftRightInput(float NewInputVal)
 {
 	CurrentLeftRightVal = NewInputVal;
 }
-
